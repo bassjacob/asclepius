@@ -24,7 +24,7 @@ type resultsType = { [string]: { healthy: bool, reason: string } };
 
 ## Example
 
-```
+```javascript
 const { healthcheck, makeRoute } = require('asclepius');
 const canHitDatabase = healthcheck('canHitDatabase', () => db.query('select current_timestamp'));
 const canHitRedis = healthcheck('canHitRedis', () => redis.get('__not_a_key__'));
