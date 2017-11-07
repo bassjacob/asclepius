@@ -2,19 +2,32 @@
 
 ## API
 
-### asclepius.`healthcheck(name: string, check: void => Promise<void>, timeoutDelay: ?number)`
+```javascript
+// some base types
+type resultType = { healthyType: bool, name: string, reason: string };
+type healthcheckType = () => Promise<resultType>;
+type resultsType = { [string]: { healthy: bool, reason: string } };
+```
 
-### makeRunner
+### asclepius.`healthcheck(name, check, timeoutDelay)`
 
-### makeRoute
+`string -> (void -> Promise<mixed>) -> ?number -> healthcheckType`
+
+
+### asclepius.`makeRunner(healthchecks: Array<>)`
+
+`Array<healthcheckType> -> void -> Promise<{ healthy: bool, results: resultsType }>`
+
+### asclepius.`makeRoute()`
+
+`Array<healthcheckType> -> expressRoute`
 
 ## Example
 
-healthchecks are functions that return a promise containing a result object `{ name: string, reason: string, healthy: bool }`. Name is used as a key for the healthcheck, and must be unique 
-
 ```
-const { healthcheck } = require('asclepius');
+const { healthcheck, makeRoute } = require('asclepius');
 const canHitDatabase = healthcheck('canHitDatabase', () => db.query('select current_timestamp'));
+const canHitRedis = healthcheck('canHitRedis', () => redis.get('__not_a_key__'));
+
+app.get('/health', makeRoute([canHitDatabase, canHitRedis]));
 ```
-
-
