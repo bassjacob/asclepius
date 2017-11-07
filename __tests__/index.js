@@ -1,12 +1,6 @@
 // @flow
 
-const {
-  makeRunner,
-  healthcheck,
-  timeout,
-  makeRoute,
-  format,
-} = require('..');
+const { makeRunner, healthcheck, timeout, makeRoute, format } = require('..');
 
 describe('Asclepius', () => {
   describe('healthcheck', () => {
@@ -69,12 +63,11 @@ describe('Asclepius', () => {
   });
 
   describe('timeout', () => {
-    it('does not resolve before the timeout', () => {
-      return Promise.race([
+    it('does not resolve before the timeout', () =>
+      Promise.race([
         new Promise(resolve => setTimeout(resolve, 10)),
         timeout(11).then(() => Promise.reject('reject')),
-      ]).then(() => expect(true).toEqual(true));
-    });
+      ]).then(() => expect(true).toEqual(true)));
 
     it('resolves after the timeout', () => {
       expect.assertions(1);
@@ -86,25 +79,22 @@ describe('Asclepius', () => {
   });
 
   describe('makeRunner', () => {
-    it('resolves if the healthchecks list is empty', () => {
-      return makeRunner([])().then(results =>
+    it('resolves if the healthchecks list is empty', () =>
+      makeRunner([])().then(results =>
         expect(results).toEqual({ healthy: true, results: {} })
-      );
-    });
+      ));
 
-    it('runs the healthchecks and sets healthy true if they all pass', () => {
-      return makeRunner([
-        healthcheck('foo', () => Promise.resolve()),
-      ])().then(results =>
-        expect(results).toEqual({
-          healthy: true,
-          results: { foo: { healthy: true, reason: 'OK' } },
-        })
-      );
-    });
+    it('runs the healthchecks and sets healthy true if they all pass', () =>
+      makeRunner([healthcheck('foo', () => Promise.resolve())])().then(
+        results =>
+          expect(results).toEqual({
+            healthy: true,
+            results: { foo: { healthy: true, reason: 'OK' } },
+          })
+      ));
 
-    it('runs the healthchecks and sets healthy false if any fail', () => {
-      return makeRunner([
+    it('runs the healthchecks and sets healthy false if any fail', () =>
+      makeRunner([
         healthcheck('foo', () => Promise.reject('reason')),
         healthcheck('bar', () => Promise.resolve()),
       ])().then(results =>
@@ -115,8 +105,7 @@ describe('Asclepius', () => {
             bar: { healthy: true, reason: 'OK' },
           },
         })
-      );
-    });
+      ));
   });
 
   describe('makeRoute', () => {
@@ -157,11 +146,13 @@ describe('Asclepius', () => {
           });
         },
       };
-      return makeRoute([
-        healthcheck('foo', () => Promise.reject('reason')),
-      ])(null, res, (x /* : string */) => {
-        throw new Error(`should not get here: ${x}`);
-      });
+      return makeRoute([healthcheck('foo', () => Promise.reject('reason'))])(
+        null,
+        res,
+        (x /* : string */) => {
+          throw new Error(`should not get here: ${x}`);
+        }
+      );
     });
   });
 
