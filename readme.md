@@ -1,5 +1,7 @@
 # Asclepius
 
+Asclepius is a healthcheck module that allows you to define functions that report back their status. Much like the famed doctor of mythology, it will diagnose and prescribe fixes for whatever ails your applications.
+
 ## API
 
 ```javascript
